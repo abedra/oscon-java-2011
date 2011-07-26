@@ -1,6 +1,7 @@
 * Lightning Fast Initial
-** Clojure items to discuss
+** Items to discuss
 *** Following along
+**** https://github.com/abedra/oscon-java-2011
 *** What to do if you get stuck
 *** But my emacs
 **** STOP! That isn't important here
@@ -8,6 +9,7 @@
 **** YourKit personal license
 ** So you've written some Clojure code
 *** Now what?
+*** What if I haven't written any Clojure code?
 ** What does it mean to be fast?
 *** Performance
 **** It's about tradeoffs
@@ -28,7 +30,7 @@
   (rest l)
   (last l)
 #+end_src
-**** The rest is constant time* O(1)
+**** The rest are constant time* O(1)
 ***** Clojure uses 32-way tries
 ****** Thus, access is actually O(log32n)
 ****** Which is fast enough (For up to a billion elements)
@@ -46,8 +48,8 @@
   (class (first m))
   (class (rest v))
 #+end_src
-**** The common thing here is that these are all Seqable (Seek A Bull)
-**** This is why you see different output "syntax"
+****** The common thing here is that these are all Seqable (Seek A Bull)
+****** This is why you see different output "syntax"
 ** Algorithms
 *** Example
 **** Initial dataset
@@ -111,8 +113,28 @@
 **** The full request time is always subject to internet latency that we can't control
 *** We have noticed that it just isn't working fast enough
 ** JMeter and a simple test plan
-*** Hooking it up
-** Profiling and fixing
+*** Demo
+** Profiling
+*** YourKit
+*** VisualVM
+*** Demo
+** Fixing
+*** How far do we go?
+**** Exponentially diminishing returns
+** Give Away
+*** Hands up
+**** Keep your hand up if
+***** You have written some Clojure code?
+***** You have a project using Clojure
+****** You are using Clojure in production
+****** You are making money writing Clojure code
+*** If all else fails
+#+begin_src clojure
+  (def people '())
+  
+  (get (into {} (zipmap (range (count people)) people))
+         (.nextInt (java.util.Random.) (count people)))
+#+end_src
 ** ClojureScript!
 *** Example
 
