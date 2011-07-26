@@ -1,0 +1,119 @@
+* Lightning Fast Initial
+** Clojure items to discuss
+*** Following along
+*** What to do if you get stuck
+*** But my emacs
+**** STOP! That isn't important here
+*** Give Away!
+**** YourKit personal license
+** So you've written some Clojure code
+*** Now what?
+** What does it mean to be fast?
+*** Performance
+**** It's about tradeoffs
+**** User perception
+**** Raw power
+**** Domain specific
+*** Applying power to the right places
+**** Let's examine a golf swing
+*** Locality
+**** If you apply power near, but the problem is far away, you haven't done anything!
+** Datastructures
+*** Maps, Sets, Vectors, and Lists (Oh My!)
+**** List access is linear O(n)
+#+begin_src clojure
+  (def l '("one" "two" "three"))
+  
+  (first l)
+  (rest l)
+  (last l)
+#+end_src
+**** The rest is constant time* O(1)
+***** Clojure uses 32-way tries
+****** Thus, access is actually O(log32n)
+****** Which is fast enough (For up to a billion elements)
+#+begin_src clojure
+  (def m {:one "one" :two "two" :three "three"})
+  (def s #{:one :two :three})
+  (def v ["one" "two" "three"])
+  
+  (first m)
+  (last s)
+  (rest v)
+#+end_src
+
+#+begin_src clojure
+  (class (first m))
+  (class (rest v))
+#+end_src
+**** The common thing here is that these are all Seqable (Seek A Bull)
+**** This is why you see different output "syntax"
+** Algorithms
+*** Example
+**** Initial dataset
+#+begin_src clojure
+  (def customer-info [{:address "10.0.1.12" :name "Wayne Enterprises" :token "1239jksjf0f2bfsdbf0" :id 23}
+                      {:address "192.168.23.89" :name "Fantastic Four LLP" :token "4jfokj34f0jilssd23f" :id 12}
+                      {:address "172.12.44.11" :name "Syndicated Inc." :token "w9ef8j92fh3829hf292" :id 8}
+                      {:address "172.12.44.24" :name "Lexcorp" :token "w9ef8j92fh3829hf29q" :id 21}])
+#+end_src 
+**** Initial implementation
+#+begin_src clojure
+  ;; Original O(n)
+  ;; Fine for a while, but gradually slower given more information
+  (defn customer-lookup
+    [address]
+    (first (filter #(= address (:address %)) customer-info)))
+#+end_src
+**** Resulting execution
+#+begin_src clojure
+  (time (customer-lookup "172.12.44.24"))
+#+end_src
+**** Good, but what happens as the dataset grows?
+**** What happens if we reorganize the data?
+#+begin_src clojure
+  (def customers (into {}
+                       (map (juxt :address identity)
+                            customer-info)))
+#+end_src
+
+#+begin_src clojure
+  customers
+#+end_src
+**** Given the new data structure, the implementation gets simpler as well
+#+begin_src clojure
+  ;; Faster O(1)
+  ;; Constant time lookup after pouring data into the proper structure
+  (defn customer-lookup
+    [address]
+    (customers address))
+#+end_src
+**** Our execution time drops, and won't increase again*
+#+begin_src clojure
+  (time (customer-lookup "172.12.44.24"))
+#+end_src
+** Common Misconceptions
+*** Static vs Dynamic
+**** What's it really about?
+***** Reaching primitives
+*** Data Structures
+**** Objects are NOT data
+*** Locality
+**** Agents vs. Actors
+***** Actors say nothing about building local systems
+***** Agents say nothing about building remote systems
+** Our sample application
+*** A web service that returns information servers
+**** Uptime, load information, updates-required, etc.
+**** This information is being stored in a database by another program that we don't control
+*** The service needs to be able to respond in under 10ms
+**** This means that it needs to be able to deliver an outbound response in under 10ms
+**** The full request time is always subject to internet latency that we can't control
+*** We have noticed that it just isn't working fast enough
+** JMeter and a simple test plan
+*** Hooking it up
+** Profiling and fixing
+** ClojureScript!
+*** Example
+
+
