@@ -1,7 +1,8 @@
-* Lightning Fast Initial
+* Lightning Fast Clojure
 ** Items to discuss
 *** Following along
 **** https://github.com/abedra/oscon-java-2011
+**** Targetting Clojure 1.3.0
 *** What to do if you get stuck
 *** But my emacs
 **** STOP! That isn't important here
@@ -19,7 +20,8 @@
 *** Applying power to the right places
 **** Let's examine a golf swing
 *** Locality
-**** If you apply power near, but the problem is far away, you haven't done anything!
+**** If you apply power near, but the problem is 
+     far away, you haven't done anything!
 ** Datastructures
 *** Maps, Sets, Vectors, and Lists (Oh My!)
 **** List access is linear O(n)
@@ -94,6 +96,21 @@
 #+begin_src clojure
   (time (customer-lookup "172.12.44.24"))
 #+end_src
+** Type Hinting
+*** Clojure can be typed via metadata
+#+begin_src clojure
+  (set! *warn-on-reflection* true)
+#+end_src
+
+#+begin_src clojure
+  (defn len [x] (.length x))
+  (time (reduce + (map len (replicate 100000 "asdf"))))
+#+end_src
+
+#+begin_src clojure
+  (defn len2 [^String x] (.length x))
+  (time (reduce + (map len2 (replicate 100000 "asdf"))))
+#+end_src
 ** Common Misconceptions
 *** Static vs Dynamic
 **** What's it really about?
@@ -107,10 +124,13 @@
 ** Our sample application
 *** A web service that returns information servers
 **** Uptime, load information, updates-required, etc.
-**** This information is being stored in a database by another program that we don't control
+**** This information is being stored in a database by another 
+     program that we don't control
 *** The service needs to be able to respond in under 10ms
-**** This means that it needs to be able to deliver an outbound response in under 10ms
-**** The full request time is always subject to internet latency that we can't control
+**** This means that it needs to be able to deliver an outbound 
+     response in under 10ms
+**** The full request time is always subject to internet latency 
+     that we can't control
 *** We have noticed that it just isn't working fast enough
 ** JMeter and a simple test plan
 *** Demo
@@ -136,6 +156,4 @@
          (.nextInt (java.util.Random.) (count people)))
 #+end_src
 ** ClojureScript!
-*** Example
-
-
+*** Demo
